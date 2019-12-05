@@ -4,7 +4,7 @@ Trabalho realizado durante o perído 19.2 relacionado a disciplina de "Fundament
 O objetivo do trabalho foi praticar os conceitos estudados em sala por meio da implementação de uma ferramente para fazer busca em arquivos de texto. 
 
 
-### Prerequisites
+### Pré-requisites
 
 Possuir Python3 instalado no dispositivo.
 
@@ -16,26 +16,30 @@ Ex: (a+b) -> ab+ para união, assim como a.b -> ab. para concatenação e a* par
 ```
 nome = ER
 ```
--- 
+
+---
 
 Testa se uma str é aceita pelo automato representado pela expressão regular de nome passado como parâmetro.
 ```
 :m m $'nome' "str"
 ```
---
+
+---
 
 Buca em um arquivo de texto todas as ocorrências das palavras que pertence a linguagem da expressão regular com nome passado como parâmetro.
-
---
 
 ```
 :m m $'nome' "arquivo"
 ```
+
+---
+
 Lista todas as expressões regulares criadas pelo usuário.
 ```
 :l
 ```
---
+
+---
 
 Interrompe o programa.
 ```
