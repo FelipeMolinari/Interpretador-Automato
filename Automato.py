@@ -18,23 +18,8 @@ class Automato:
         self.funcTransf = funcTransf
         self.estadoAtual = estadoIni
     
-            
-    # trans_func = {'q1' : {'0' : ['q1', 'q2', 'q3'], '1' : ['q2']}, 'q2' : {'0' : ['q1'], '1' : ['q2']}}
-
-             
-# Primeiro: verifico qual simbolo
-# Segundo: Verifico no meu conjunto de estados correntes qual o proximo estado para aquele simbolo
-# Terceiro: Altero o meu estado corrente para o novo
-
-# trans_func = {'q1' : {'0' : ['q1', 'q2'], '1' : ['q2']}, 'q2' : {'0' : ['q1'], '1' : ['q2']}}
-
     def adicionaEstadoSobLambda(self, estadosCorrente, transicao_func):
-
-
         auxiliar = []
-        # print('Então .... {}'.format(transicao_func))
-        # input('{}'.format(estadosCorrente))
-        
         for element in estadosCorrente:
             if(Automato.LAMBDACONSTANTE in transicao_func[element]):       
                     auxiliar.extend(transicao_func[element][Automato.LAMBDACONSTANTE])
@@ -42,6 +27,8 @@ class Automato:
         estadosCorrente = list(dict.fromkeys(estadosCorrente)) 
         return estadosCorrente          
 
+
+                
     def maiorPalavraContida(self, palavra):
 
         conjuntoEstadoCorrente = []
@@ -49,6 +36,7 @@ class Automato:
         auxiliar = []
         transicao_func = self.funcTransf
         contadorDeTransicoes = 0
+
 
         if self.estadoIni in self.estadosFim:
             aceitaAte = 1
@@ -76,14 +64,35 @@ class Automato:
             else: 
                 return aceitaAte
             
-            
             conjuntoEstadoCorrente = copy.deepcopy(auxiliar)
             
             auxiliar = []
         return aceitaAte
                         
 
+    def palavrasArquivo(self, arq):
+        linhasValidas = []
+        with open(arq, "r",encoding = "ISO-8859-1") as file:
+            l = 1
+            for linhas in file:
+                palavra = ""
+                for caracter in linhas:
+                    if caracter != " " :
+                        palavra += caracter
+                    else:
+                        i =0
+                        for i in range(0, len(palavra)):
+                            aux = palavra[i:len(palavra)]
+                            
+                            if self.maiorPalavraContida(aux) > 0:
+                                
+                                linhasValidas.insert(len(linhasValidas), l)
+                        palavra = []
+                l += 1
+        linhasValidas = list(dict.fromkeys(linhasValidas)) 
+        return linhasValidas  
 
+            
 
     #Gera um automato que aceita apenas um simbolo
     @staticmethod
@@ -101,7 +110,6 @@ class Automato:
         # visto sempre os estados originais terão valor menor que o novo estado. Ex: q1 passa a ser q2, podendo conflitar com o q2 original. 
         auxEstados = list(self.funcTransf)[::-1]
 
-        
         for estado in auxEstados:
             auxTransicoes = list(self.funcTransf[estado])
             for transicoes in auxTransicoes:
@@ -122,8 +130,6 @@ class Automato:
         
         for x in range(len(self.estadosFim)):
             self.estadosFim[x] = 'q{}'.format(int(self.estadosFim[x][1]) + numEstados)
-        # inicial = {Automato.LAMBDACONSTANTE:"q{}".format(numEstados+1)}
-        # self.funcTransf["q1"] = inicial
 
 
     def criaNovoEstadoComTransicoesLambdas(self, estadoDest):
@@ -133,27 +139,20 @@ class Automato:
 
                 self.funcTransf[estado][Automato.LAMBDACONSTANTE] = ['q{}'.format(estadoDest)]
 
-
         self.funcTransf['q{}'.format(estadoDest)]= {}
-
-        
-       
 
     def getQuantidadeDeEstados(self, aut2):
         return len(self.funcTransf) + len(aut2.funcTransf)
-
 
     def feixoKleene(self):
         
         novoAutomato = self
         for estado in self.estadosFim:
             novoAutomato.funcTransf[estado][Automato.LAMBDACONSTANTE] = [self.estadoIni]
- 
 
-        novoAutomato.estadosFim.extend([self.estadoIni])
+        # novoAutomato.estadosFim.extend([self.estadoIni])
         return novoAutomato
-
-    
+   
     def concatenaAutomatos(self, vaiConcatenar):
 
         numEstadosSelfAutomato = len(self.funcTransf)
@@ -172,9 +171,6 @@ class Automato:
         
         return novoAutomato
     
-    
-
-
     def unirAutomatos(self, vaiUnir):
         self.alteraNomeEstados(1)
         inicial = {Automato.LAMBDACONSTANTE:["q{}".format(2)]}
@@ -193,8 +189,6 @@ class Automato:
 
         vaiUnir.funcTransf["q1"] = inicial
         
-
-
         estadoInicialAux = []
         estadoInicialAux.append(self.estadoIni)
         estadoInicialAux.append(vaiUnir.estadoIni)
@@ -203,34 +197,12 @@ class Automato:
         # Junta os automatos self e vaiUnir
 
         novoAutomato.funcTransf.update(vaiUnir.funcTransf)
-        # for element in vaiUnir.funcTransf:
-        #     novoAutomato.funcTransf[element] = vaiUnir.funcTransf[element]
-        
+
         #Altera o estado inicial
         novoAutomato.funcTransf["q1"][Automato.LAMBDACONSTANTE] = estadoInicialAux
         novoAutomato.estadoIni = "q1"
     
         #Altera o estado final
         novoAutomato.estadosFim = ['q{}'.format(quantidadeTotalEstados+1)]
-
-        # print("{} \n {}".format(self.funcTransf, vaiUnir.funcTransf))
         return novoAutomato
-    
-    
-# # trans_func2 = {'q1' : {'0' : ['q2']}, 'q2' : {}}
-
-# # trans_func = {'q1' : {'a' : ['q2']}, 'q2' : {}}
-
-# # a2 = Automato("q1", ["q2"], trans_func)
-# # a1 = Automato("q1", ["q2"], trans_func2) 
-# # automatoConcatenado = a1.concatenaAutomatos(a2)
-# a1 = Automato.geraAutomatoComUmSimbolo("a")
-# a2 = Automato.geraAutomatoComUmSimbolo("b")
-# a3 = a1.unirAutomatos(a2)
-# a4 = Automato.geraAutomatoComUmSimbolo("b")
-# a5 = a3.concatenaAutomatos(a4)
-
-
-# a6 = Automato.geraAutomatoComUmSimbolo("a")
-# a7 = a6.feixoKleene()
-# # input(a7.maiorPalavraContida('abaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaa'))
+   

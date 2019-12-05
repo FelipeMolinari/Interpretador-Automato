@@ -49,6 +49,13 @@ class FactoryAutomato:
         pilhaAutomato = []
         i=0
         while i< len(self.definicao):
+            print(self.definicao[i])
+            # Caractere de escape. '+' pode também ser um símbolo do alfabeto, basta adicionar o caracterer '\' antes do simbolo de operação
+            if self.definicao[i] == "\\":        
+                i =i + 2        
+                pilhaAutomato.insert(len(pilhaAutomato),Automato.geraAutomatoComUmSimbolo(self.definicao[i]))
+                continue
+            # Caracter que faz a união entre dois automatos ab+
             if self.definicao[i] == "+":
                 
                 if len(pilhaAutomato) != 0:
@@ -63,7 +70,7 @@ class FactoryAutomato:
                 
                 self.automato.unirAutomatos(aux)
                 pilhaAutomato.insert(len(pilhaAutomato), self.automato)
-
+            # Se ler o caracter '.' faz a concatenação de dois automatos. 
             elif self.definicao[i] == ".":
                 if len(pilhaAutomato) != 0:
                     
@@ -79,6 +86,7 @@ class FactoryAutomato:
 
                 self.automato.concatenaAutomatos(aux)
                 pilhaAutomato.insert(len(pilhaAutomato), self.automato)
+            # Se ler o simbolo '*' faz a operação de kleene
             elif self.definicao[i] == "*":
                 if len(pilhaAutomato) != 0:
                     self.automato = pilhaAutomato.pop()
@@ -87,6 +95,7 @@ class FactoryAutomato:
 
                 self.automato.feixoKleene()
                 pilhaAutomato.insert(len(pilhaAutomato), self.automato)
+            # Se ler um simbolo do alfabeto cria um automato com apenas um simbolo 
             else:
                 pilhaAutomato.insert(len(pilhaAutomato),Automato.geraAutomatoComUmSimbolo(self.definicao[i]))
             i = i +1 
