@@ -1,4 +1,4 @@
-# Interpretador Automato
+# Interpretador Autômatos
 
 Trabalho realizado durante o perído 19.2 relacionado a disciplina de "Fundamentos Téoricos da Computação"
 O objetivo do trabalho foi praticar os conceitos estudados em sala por meio da implementação de uma ferramente para fazer busca em arquivos de texto. 
